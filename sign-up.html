@@ -1,0 +1,158 @@
+<html>
+	<head>
+		<meta charset="utf8">
+		<title>Pensjonat - rejestracja</title>
+		<link rel="stylesheet" href="css/font-awesome-4.7.0/css/font-awesome.min.css" />
+		<link rel="stylesheet" href="css/styles.css" />
+	</head>
+	<body>
+		<div class="container">
+			<div class="content">
+				<h1>Rejestracja</h1>
+
+				<form id="signUpForm" class="form-style-1" novalidate>
+					<fieldset>
+						<legend>Dane osobowe:</legend>
+						<ul>
+							<li>
+								<label>Imię i nazwisko <span class="required">*</span></label><input type="text" name="name" class="field-divided" placeholder="Imię" />&nbsp;<input type="text" name="surname" class="field-divided" placeholder="Nazwisko" />
+								<span class="validation-message">Pole nie jest wypełnione poprawnie</span>
+							</li>
+							<li>
+								<label>E-mail <span class="required">*</span></label>
+								<input type="email" name="email" class="field-long" />
+								<span class="validation-message">Pole nie jest wypełnione poprawnie</span>
+							</li>
+							<li>
+								<label>PESEL <span class="required">*</span></label>
+								<input type="text" pattern="[0-9]{11}" name="pesel" class="field-long" />
+								<span class="validation-message">Pole nie jest wypełnione poprawnie</span>
+							</li>
+							<li>
+								<label>Numer i seria dowodu <span class="required">*</span></label>
+								<input type="text" pattern="[0-9]{11}" name="idcard" class="field-long" />
+								<span class="validation-message">Pole nie jest wypełnione poprawnie</span>
+							</li>
+						</ul>
+					</fieldset>
+					<fieldset>
+						<legend>Adres zamieszkania:</legend>
+						<ul>
+							<li>
+								<label>Kraj </label>
+								<select name="country" class="field-select">
+									<option value="Poland">Polska</option>
+								</select>
+							</li>
+							<li>
+								<label>Miasto <span class="required">*</span></label>
+								<input type="text" name="city" class="field-long" />
+								<span class="validation-message">Podane miasto jest nieprawidłowe</span>
+							</li>
+							<li>
+								<label>Ulica <span class="required">*</span></label><input type="text" name="street" class="field-divided-long" placeholder="Ulica" />&nbsp;<input type="text" name="houseNumber" class="field-divided-short" placeholder="Nr domu" />
+								<span class="validation-message">>Pole nie jest wypełnione poprawnie</span>
+							</li>
+							<li>
+								<label>Kod pocztowy <span class="required">*</span></label>
+								<input type="text" name="postalCode" class="field-long" pattern="[0-9]{2}-[0-9]{3}" />
+								<span class="validation-message">Podany kod pocztowy jest nieprawidłowy</span>
+							</li>
+						</ul>
+					</fieldset>
+					<ul>
+						<li>
+							<input type="submit" value="Zarejestruj się" />
+						</li>
+					</ul>
+				</form>
+			</div>
+		</div>
+		<script>
+			(function () {
+				let validatorFuncs = {
+					email: (email) => /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email),
+					pesel: (pesel) => {
+						var reg = /^[0-9]{11}$/;
+						if(reg.test(pesel) == false) {
+							return false;
+						} else {
+							var dig = (""+pesel).split("");
+							var ks = [1, 3, 7, 9, 1, 3, 7, 9, 1, 3, 0];
+							var kontrola = dig.reduce((prev, curr, i) => {
+								return prev + ks[i]*parseInt(curr);
+							}, 0) % 10;
+							kontrola = kontrola === 0 ? 0 : 10 -kontrola;
+							return parseInt(dig[10]) === kontrola;
+						}
+					},
+					postalCode: (postalCode) => /^[0-9]{2}-[0-9]{3}$/.test(postalCode),
+				}
+				function clearInvalidStates(inputs) {
+					for(let key in inputs) {
+						inputs[key].setInvalidState(false);
+					}
+				}
+				function validateRequiredFields(inputs) {
+					for(let name in inputs) {
+						if(inputs[name].value.length === 0) inputs[name].setValidationMessage('To pole jest wymagane');
+					}
+				}
+				function validateForm(inputs) {
+					if(inputs.email !== undefined && inputs.email.value.length > 0 && !validatorFuncs.email(inputs.email.value)) {
+						inputs.email.setValidationMessage('Nieprawidłowy adres e-mail');
+					}
+					if(inputs.pesel !== undefined && inputs.pesel.value.length > 0 && !validatorFuncs.pesel(inputs.pesel.value)) {
+						inputs.pesel.setValidationMessage('Nieprawidłowy PESEL');
+					}
+					if(inputs.postalCode !== undefined && inputs.postalCode.value.length > 0 && !validatorFuncs.postalCode(inputs.postalCode.value)) {
+						inputs.postalCode.setValidationMessage('Nieprawidłowy kod pocztowy');
+					}
+				}
+				document.getElementById('signUpForm').addEventListener('submit', function (e) {
+					e.preventDefault();
+
+					let mappedInputs = mapInputs(getInputs());
+					clearInvalidStates(mappedInputs);
+					validateForm(mappedInputs);
+					validateRequiredFields(mappedInputs);
+				});
+				(function () {
+					let inputs = getInputs();
+					inputs.forEach((input) => {
+						input.addEventListener('blur', function () {
+							let mapped = mapInputs([input]);
+							mapped[input.name].setInvalidState(false);
+							validateForm(mapped);
+						});
+					});
+				})();
+				function getInputs() {
+					return Array.from(document.getElementsByTagName('input'))
+						.filter(input => input.type !== 'submit');
+				}
+				function mapInputs(inputs) {
+					return inputs.map((input) => {
+						return {
+							name: input.name,
+							value: input.value,
+							parent: input.parentElement,
+							setInvalidState: function (state) {
+								this.parent.className = this.parent.className.replace("invalid", "");
+								if(state) this.parent.className += " invalid";
+							},
+							setValidationMessage: function (message, setInvalidState = true) {
+								this.parent.querySelector('.validation-message').innerHTML = message;
+								if(setInvalidState) this.setInvalidState(true);
+							}
+						};
+					})
+					.reduce((prev, current) => {
+						prev[current.name] = { value: current.value, parent: current.parent, setInvalidState: current.setInvalidState, setValidationMessage: current.setValidationMessage };
+						return prev;
+					}, {});
+				}
+			})();
+		</script>
+	</body>
+</html>

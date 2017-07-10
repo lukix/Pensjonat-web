@@ -1,0 +1,36 @@
+<html>
+	<head>
+		<meta charset="utf8">
+		<title>Pensjonat</title>
+		<link rel="stylesheet" href="css/font-awesome-4.7.0/css/font-awesome.min.css" />
+		<link rel="stylesheet" href="css/styles.css" />
+	</head>
+	<body>
+		<div class="container wide">
+			<div class="sidebar">
+				<div class="profile-info">
+					<span class="name-surname">Łukasz Jenczmyk</span>
+				</div>
+				<ul class="menu">
+					<li><a href="my-reservations.html">Moje rezerwacje</a></li>
+					<li><a href="new-reservation.html">Nowa rezerwacja</a></li>
+					<li><a href="settings.html">Ustawienia konta</a></li>
+					<li><a href="logout.html">Wyloguj</a></li>
+				</ul>
+			</div>
+			<div class="content">
+				<h2>Moje rezerwacje</h2>
+				<ul class="reservations" id="currentReservations"></ul>
+				<a href="new-reservation.html" style="color: black; text-decoration: none">
+					<div id="addReservation">
+							<i class="fa fa-plus" style="position: relative; top: 1.5px" aria-hidden="true"></i> Dodaj nową rezerwację
+					</div>
+				</a>
+
+				<h2 style="margin-top: 60px">Historia rezerwacji</h2>
+				<ul class="reservations" id="historyReservations"></ul>
+			</div>
+		</div>
+		<script src="js/my-reservations.js"></script>
+	</body>
+</html>

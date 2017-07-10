@@ -1,0 +1,35 @@
+#calendar {
+	list-style-type: none;
+	padding: 0;
+}
+#calendar ul {
+	list-style-type: none;
+	padding: 0;
+}
+#calendar>li {
+	display: flex;
+	justify-content: space-between;
+	flex-direction: row;
+	align-items: center;
+	width: 100%;
+	box-shadow: #646464 0 0 10px 1px;
+	margin-bottom: 10px;
+}
+
+#calendar>li>.date {
+	padding: 10px;
+	background: #ccc;
+}
+#calendar>li>.date>span {
+	display: block;
+	font-size: 1.4rem;
+}
+
+#calendar>li>ul {
+	flex: 1;
+	text-align: left;
+	padding: 10px;
+}
+#calendar>li>.action {
+	padding: 10px;
+}

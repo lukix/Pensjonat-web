@@ -1,0 +1,34 @@
+<html>
+	<head>
+		<meta charset="utf8">
+		<title>Pensjonat</title>
+		<link rel="stylesheet" href="css/font-awesome-4.7.0/css/font-awesome.min.css" />
+		<link rel="stylesheet" href="css/styles.css" />
+		<link rel="stylesheet" href="css/new-reservation.css" />
+	</head>
+	<body>
+		<div class="container wide">
+			<div class="sidebar">
+				<div class="profile-info">
+					<span class="name-surname">Łukasz Jenczmyk</span>
+				</div>
+				<ul class="menu">
+					<li><a href="my-reservations.html">Moje rezerwacje</a></li>
+					<li><a href="new-reservation.html">Nowa rezerwacja</a></li>
+					<li><a href="settings.html">Ustawienia konta</a></li>
+					<li><a href="logout.html">Wyloguj</a></li>
+				</ul>
+			</div>
+			<div class="content">
+				<h2>Nowa rezerwacja</h2>
+				<p style="text-align: left">
+					Data rozpoczęcia:<br /><input type="date" /><br /><br />
+					Ilość osób:<br /><input type="number" min="0" max="100" step="1" value="2" /><br /><br />
+					<input type="button" value="Szukaj" id="searchTermsBtn" />
+				</p>
+				<ul id="calendar"></ul>
+			</div>
+		</div>
+		<script src="js/new-reservation.js"></script>
+	</body>
+</html>
