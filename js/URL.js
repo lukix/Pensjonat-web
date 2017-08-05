@@ -1,1 +1,1 @@
-let url = 'http://pensjonat.localtunnel.me/api/';
+let URL = 'http://pensjonat.localtunnel.me/api/';

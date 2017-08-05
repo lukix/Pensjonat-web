@@ -21,11 +21,55 @@ const reservations = [
 
 (function () {
 	function getReservations() {
+		return Http.get(URL + 'reservations')
+			.then(res => {
+				return res.json().then((data) => {
+					if(res.ok) {
+						//hideLoading();
+						return reservations;
+					} else {
+						throw {error: data};
+					}
+					/*
+					console.log('res:');
+					console.log(res);
+					console.log('data:');
+					console.log(data);
+					*/
+				});
+			});
+			/*
+			.catch(err => {
+				showError();
+				//console.log('error:');
+				//console.log(err);
+			});
+			*/
+		/*
 		return new Promise((resolve, reject) => {
 			resolve(reservations);
 		});
+		*/
+	}
+	function showLoading() {
+		document.querySelectorAll('.loading-message').forEach(item => {
+			item.style.display = 'block';
+		});
+	}
+	function hideLoading() {
+		document.querySelectorAll('.loading-message').forEach(item => {
+			item.style.display = 'none';
+		});
+	}
+	function showError(error) {
+		console.log(error);
+		document.querySelectorAll('.error-message').forEach(item => {
+			item.style.display = 'block';
+			item.innerHTML = error.message;
+		});
 	}
 	function showReservations (reservations) {
+		hideLoading();
 		const stringToDate = (string) => {
 			let [d, m, y] = string.split('.');
 			return new Date([m, d, y].join('.'));
@@ -46,8 +90,15 @@ const reservations = [
 	}
 
 	(function () {
-		getReservations().then(reservations => {
-			showReservations(reservations);
+		showLoading();
+		getReservations()
+		.then(reservations => {
+			hideLoading();
+			showReservations(reservations)
+		})
+		.catch(err => {
+			hideLoading();
+			showError(err.error);
 		});
 	})();
 })();

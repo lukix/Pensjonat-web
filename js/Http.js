@@ -3,8 +3,7 @@ const Http = {
 		let defaultOptions = {
 			headers: {
 				'Content-Type': 'application/json'
-			},
-			credentials: 'include'
+			}
 		};
 		if(options === undefined)
 			options = {};

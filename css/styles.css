@@ -219,3 +219,10 @@ select{
 .form-style-1 .required{
     color:red;
 }
+.loading-message, .error-message {
+	font-weight: bold;
+	display: none;
+}
+.error-message {
+	color: red;
+}
