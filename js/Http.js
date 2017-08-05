@@ -1,4 +1,4 @@
-export default {
+const Http = {
 	ajax: function (url, method, data, options) {
 		let defaultOptions = {
 			headers: {
