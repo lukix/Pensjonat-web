@@ -13,7 +13,16 @@ const reservationData = {
   "guestId": "12345",
   "accommodations": [
     {
-      "roomId": "string",
+      "roomId": "101",
+      "meals": [
+        "string"
+      ],
+      "services": [
+        "string"
+      ]
+		},
+		{
+      "roomId": "102",
       "meals": [
         "string"
       ],
@@ -35,7 +44,10 @@ const reservationData = {
 		document.querySelector('#reservationData').innerHTML = `
 			Rezerwacja od ${formatDate(reservationData.startDate)}
 			do ${formatDate(reservationData.endDate)}.<br />
-			Liczba osób: ${7} (jeden pokój).
+			Pokoje:
+			<ul>
+				${reservationData.accommodations.map(accomodation => `<li>Pokój ${accomodation.roomId}, 3 osoby</li>`).join('')}
+			</ul>
 		`;
 	}
 	function getParameterByName(name, url) {

@@ -91,8 +91,7 @@ ul.reservations li, #addReservation {
 	padding: 5px 15px;
 	box-shadow: #646464 0 0 10px 1px;
 	cursor: pointer;
-	background: #4B99AD;
-	color: white;
+	background-color: #EDEEF8;
 	text-align: left;
 	display: block;
 }
@@ -211,8 +210,9 @@ select{
 input[type=submit], input[type=button]{
     background: #4B99AD;
     padding: 8px 15px 8px 15px;
-    border: none;
-    color: #fff;
+	border: none;
+	color: #fff;
+	cursor: pointer;
 }
 .form-style-1 input[type=submit]:hover, .form-style-1 input[type=button]:hover{
     background: #4691A4;
