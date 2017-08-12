@@ -25,26 +25,16 @@ const reservations = [
 			.then(res => {
 				return res.json().then((data) => {
 					if(res.ok) {
-						//hideLoading();
 						return reservations;
 					} else {
 						throw {error: data};
 					}
 					/*
-					console.log('res:');
-					console.log(res);
 					console.log('data:');
 					console.log(data);
 					*/
 				});
 			});
-			/*
-			.catch(err => {
-				showError();
-				//console.log('error:');
-				//console.log(err);
-			});
-			*/
 		/*
 		return new Promise((resolve, reject) => {
 			resolve(reservations);

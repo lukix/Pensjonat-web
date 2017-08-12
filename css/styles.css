@@ -58,6 +58,9 @@ ul.menu a {
 	text-decoration: none;
 	display: block;
 }
+ul.menu a i {
+	width: 20px;
+}
 ul.menu a:hover {
 	color: #ccc;
 }
@@ -225,4 +228,7 @@ select{
 }
 .error-message {
 	color: red;
+}
+div.your-reservation {
+	margin-bottom: 40px;
 }

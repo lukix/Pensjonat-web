@@ -1,1 +1,1 @@
-let URL = 'http://pensjonat.localtunnel.me/api/';
+let URL = 'http://pensjonat-dev.northeurope.cloudapp.azure.com/api/';

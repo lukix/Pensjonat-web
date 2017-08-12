@@ -10,23 +10,38 @@
 		<div class="container wide">
 			<div class="sidebar">
 				<div class="profile-info">
-					<span class="name-surname">Łukasz Jenczmyk</span>
+					<span class="name-surname">John Doe</span>
 				</div>
 				<ul class="menu">
-					<li><a href="my-reservations.html">Moje rezerwacje</a></li>
-					<li><a href="new-reservation.html">Nowa rezerwacja</a></li>
-					<li><a href="settings.html">Ustawienia konta</a></li>
-					<li><a href="logout.html">Wyloguj</a></li>
+					<li>
+						<a href="my-reservations.html"><i class="fa fa-list-ul" aria-hidden="true"></i> Moje rezerwacje</a>
+					</li>
+					<li>
+						<a href="new-reservation.html"><i class="fa fa-plus" aria-hidden="true"></i> Nowa rezerwacja</a>
+					</li>
+					<li>
+						<a href="settings.html"><i class="fa fa-cog" aria-hidden="true"></i> Ustawienia konta</a>
+					</li>
+					<li>
+						<a href="logout.html"><i class="fa fa-sign-out" aria-hidden="true"></i> Wyloguj</a>
+					</li>
 				</ul>
 			</div>
 			<div class="content">
 				<h2>Nowa rezerwacja</h2>
 				<p style="text-align: left">
-					Data rozpoczęcia:<br /><input type="date" /><br /><br />
-					Ilość osób:<br /><input type="number" min="0" max="100" step="1" value="2" /><br /><br />
-					<input type="button" value="Szukaj" id="searchTermsBtn" />
+					Data rozpoczęcia:<br /><input type="date" id="dateFrom" /><br /><br />
+					Data zakończenia:<br /><input type="date" id="dateTo" /><br /><br />
+					<input type="button" value="Szukaj" id="searchRoomsBtn" />
 				</p>
-				<ul id="calendar"></ul>
+				<div class="your-reservation">
+					<h2>Twoja rezerwacja</h2>
+					<ul class="rooms" id="reservedRooms"></ul>
+					<input type="button" value="Rezerwuj" id="reserveBtn" />
+				</div>
+				<h2 class="all-rooms">Dostępne pokoje</h2>
+				<p id="no-rooms-found">Brak dostępnych pokoi w podanym terminie</p>	
+				<ul class="rooms" id="allRooms"></ul>
 			</div>
 		</div>
 		<script src="js/URL.js"></script>

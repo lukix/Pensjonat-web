@@ -1,12 +1,12 @@
-#calendar {
+.rooms {
 	list-style-type: none;
 	padding: 0;
 }
-#calendar ul {
+.rooms ul {
 	list-style-type: none;
 	padding: 0;
 }
-#calendar>li {
+.rooms>li {
 	display: flex;
 	justify-content: space-between;
 	flex-direction: row;
@@ -16,20 +16,20 @@
 	margin-bottom: 10px;
 }
 
-#calendar>li>.date {
+.rooms>li>.date {
 	padding: 10px;
 	background: #ccc;
 }
-#calendar>li>.date>span {
+.rooms>li>.date>span {
 	display: block;
 	font-size: 1.4rem;
 }
 
-#calendar>li>ul {
+.rooms>li>ul {
 	flex: 1;
 	text-align: left;
 	padding: 10px;
 }
-#calendar>li>.action {
+.rooms>li>.action {
 	padding: 10px;
 }
