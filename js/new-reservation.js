@@ -1,10 +1,12 @@
+/*
 const availableRooms = new Array(14).fill(
 	{
-		date: '10.09.2017',
-		capacity: 4,
+		date: '2017-08-14',
+		sleepPlaceAmount: 4,
 		price: 79,
 		selected: false
 	}).map((item, index) => Object.assign({}, item, {number: (150+index)}));
+*/
 (function () {
 	let state = {
 		rooms: []
@@ -17,9 +19,17 @@ const availableRooms = new Array(14).fill(
 	}
 
 	function getAvailableRooms() {
-		return new Promise((resolve, reject) => {
-			resolve(availableRooms);
-		});
+		let fromDate = document.getElementById('dateFrom').valueAsDate;
+		let untilDate = document.getElementById('dateTo').valueAsDate;
+		const formatDate = (date) => date.toLocaleString().split(',')[0].split('.').reverse().join('-');
+		return Http.get(URL + 'rooms/aviable' + `?FromDate=${formatDate(fromDate)}&UntilDate=${formatDate(untilDate)}`)
+			.then(res => {
+				console.log(res);
+				return res.json();
+			}).then(data => {
+				console.log(data);
+				return data.rooms;
+			});
 	}
 	function showRooms() {
 		const stringToDate = (string) => {
@@ -33,9 +43,16 @@ const availableRooms = new Array(14).fill(
 					<span>${room.number}</span>
 				</div>
 				<ul>
-					<li>${room.capacity} osobowy</li>
+					<li>${room.sleepPlaceAmount} osobowy</li>
 					<li>Cena za dobę: ${room.price}zł</li>
-					<li>Wyposażenie: Suszarka, Maszyna W</li>
+					<li>
+						Wyposażenie:
+						${
+							room.assets.length > 0
+							? room.assets.map((asset) => asset.name).join(', ')
+							: 'Brak dodatkowego wyposażenia'
+						}
+					</li>
 				</ul>
 				<div class="action">
 					<a href="">

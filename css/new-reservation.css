@@ -20,6 +20,7 @@
 	padding: 10px;
 	background: #4B99AD;
 	color: white;
+	min-width: 35px;
 }
 .rooms>li>.date>span {
 	display: block;
