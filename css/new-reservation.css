@@ -18,7 +18,8 @@
 
 .rooms>li>.date {
 	padding: 10px;
-	background: #ccc;
+	background: #4B99AD;
+	color: white;
 }
 .rooms>li>.date>span {
 	display: block;

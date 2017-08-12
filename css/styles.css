@@ -29,7 +29,7 @@ body {
 	color: white;
 	width: 180px;
 	min-height: 400px;
-	background-color: #777980;
+	background: #4B99AD;
 	padding: 0px 20px;
 }
 .profile-info {
@@ -91,7 +91,8 @@ ul.reservations li, #addReservation {
 	padding: 5px 15px;
 	box-shadow: #646464 0 0 10px 1px;
 	cursor: pointer;
-	background-color: #EDEEF8;
+	background: #4B99AD;
+	color: white;
 	text-align: left;
 	display: block;
 }
@@ -207,7 +208,7 @@ select{
 .form-style-1 .field-textarea{
     height: 100px;
 }
-.form-style-1 input[type=submit], .form-style-1 input[type=button]{
+input[type=submit], input[type=button]{
     background: #4B99AD;
     padding: 8px 15px 8px 15px;
     border: none;
