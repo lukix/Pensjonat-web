@@ -23,28 +23,69 @@
 		}
 	}
 	function validateRequiredFields(inputs) {
+		let isValid = true;
 		for(let name in inputs) {
-			if(inputs[name].value.length === 0) inputs[name].setValidationMessage('To pole jest wymagane');
+			if(inputs[name].value.length === 0) {
+				isValid = false;
+				inputs[name].setValidationMessage('To pole jest wymagane');
+			}
 		}
+		return isValid;
 	}
 	function validateForm(inputs) {
+		let isValid = true;
 		if(inputs.email !== undefined && inputs.email.value.length > 0 && !validatorFuncs.email(inputs.email.value)) {
+			isValid = false;
 			inputs.email.setValidationMessage('Nieprawidłowy adres e-mail');
 		}
 		if(inputs.pesel !== undefined && inputs.pesel.value.length > 0 && !validatorFuncs.pesel(inputs.pesel.value)) {
+			isValid = false;
 			inputs.pesel.setValidationMessage('Nieprawidłowy PESEL');
 		}
 		if(inputs.postalCode !== undefined && inputs.postalCode.value.length > 0 && !validatorFuncs.postalCode(inputs.postalCode.value)) {
+			isValid = false;
 			inputs.postalCode.setValidationMessage('Nieprawidłowy kod pocztowy');
 		}
+		return isValid;
 	}
 	document.getElementById('signUpForm').addEventListener('submit', function (e) {
 		e.preventDefault();
 
 		let mappedInputs = mapInputs(getInputs());
 		clearInvalidStates(mappedInputs);
-		validateForm(mappedInputs);
-		validateRequiredFields(mappedInputs);
+		let valid1 = validateForm(mappedInputs);
+		let valid2 = validateRequiredFields(mappedInputs);
+
+		if(valid1 && valid2) {
+			let data = {
+				firstName: mappedInputs.name.value,
+				lastName: mappedInputs.surname.value,
+				email: mappedInputs.email.value,
+				password: mappedInputs.password.value,
+				pesel: mappedInputs.pesel.value,
+				birthday: '2017-08-12T22:52:53.568Z',
+				address: [
+					mappedInputs.country.value,
+					mappedInputs.postalCode.value,
+					mappedInputs.city.value,
+					mappedInputs.street.value,
+					mappedInputs.houseNumber.value
+				].join(', ')
+			};
+			console.log(data);
+			Http.post(URL + 'guests', data)
+				.then(res => {
+					if(res.ok) {
+						console.log('ok');
+						window.location = "sign-in.html";
+					} else {
+						console.log('error');
+					}
+					res.json().then(json => {
+						console.log(json);
+					})
+				});
+		}
 	});
 	(function () {
 		let inputs = getInputs();
@@ -57,8 +98,10 @@
 		});
 	})();
 	function getInputs() {
-		return Array.from(document.getElementsByTagName('input'))
-			.filter(input => input.type !== 'submit');
+		return [
+				...Array.from(document.getElementsByTagName('input')),
+				...Array.from(document.getElementsByTagName('select'))
+			].filter(input => input.type !== 'submit');
 	}
 	function mapInputs(inputs) {
 		return inputs.map((input) => {
