@@ -8,9 +8,22 @@
 		Http.post(URL + 'login', {email, password})
 			.then(res => {
 				if(res.ok) {
-					console.log('ok');
-					//TODO: Save user data to local storage
-					window.location = "my-reservations.html";
+					res.json().then(guestId => {
+						console.log(guestId);
+						return Http.get(URL + 'guests/' + guestId);
+					}).then(res => {
+						if(res.ok) {
+							res.json().then(guest => {
+								console.log(guest);
+								localStorage.setItem('guestId', guest.id);
+								localStorage.setItem('guestFirstName', guest.firstName);
+								localStorage.setItem('guestLastName', guest.lastName);
+								window.location = "my-reservations.html";
+							});
+						} else {
+							document.getElementById('errorMessage').style.visibility = 'visible';
+						}
+					});
 				} else {
 					document.getElementById('errorMessage').style.visibility = 'visible';
 				}

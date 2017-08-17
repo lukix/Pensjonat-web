@@ -60,6 +60,7 @@ const reservationData = {
 			return decodeURIComponent(results[2].replace(/\+/g, " "));
 	}
 	(function () {
+		document.querySelector('.name-surname').innerHTML = localStorage.guestFirstName + ' ' + localStorage.guestLastName;
 		var reservationId = getParameterByName('id');
 		if(reservationId === null) {
 			window.location = "my-reservations.html";
