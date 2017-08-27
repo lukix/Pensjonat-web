@@ -80,7 +80,6 @@ const reservations = [
 	}
 
 	(function () {
-		document.querySelector('.name-surname').innerHTML = localStorage.guestFirstName + ' ' + localStorage.guestLastName;
 		showLoading();
 		getReservations()
 		.then(reservations => {

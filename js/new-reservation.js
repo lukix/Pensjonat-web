@@ -88,7 +88,6 @@ const availableRooms = new Array(14).fill(
 	}
 
 	(function () {
-		document.querySelector('.name-surname').innerHTML = localStorage.guestFirstName + ' ' + localStorage.guestLastName;
 		document.querySelector('#searchRoomsBtn').addEventListener('click', function () {
 			getAvailableRooms().then(roomsData => {
 				setState({rooms: roomsData});
