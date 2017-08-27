@@ -23,7 +23,7 @@ body {
 	justify-content: flex-start;
 }
 .container.wide {
-	width: 900px;
+	width: 1000px;
 }
 .container .sidebar {
 	color: white;
