@@ -77,7 +77,7 @@
 				.then(res => {
 					if(res.ok) {
 						console.log('ok');
-						window.location = "sign-in.html";
+						window.location = "sign-in.html?justcreated=true";
 					} else {
 						console.log('error');
 					}
