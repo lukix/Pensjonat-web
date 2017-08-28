@@ -8,9 +8,8 @@
 		Http.post(URL + 'login', {email, password})
 			.then(res => {
 				if(res.ok) {
-					res.json().then(guestId => {
-						console.log(guestId);
-						return Http.get(URL + 'guests/' + guestId);
+					res.json().then(data => {
+						return Http.get(URL + 'guests/' + data.id);
 					}).then(res => {
 						if(res.ok) {
 							res.json().then(guest => {
