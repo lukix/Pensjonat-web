@@ -104,7 +104,6 @@
 			});
 		});
 		document.querySelector('#reserveBtn').addEventListener('click', function () {
-			console.log(state.rooms.filter(room => room.selected));
 			let requestData = {
 				"startDate": formatDate(document.getElementById('dateFrom').valueAsDate),//"2017-08-27T19:34:32.156Z",
 				"endDate": formatDate(document.getElementById('dateTo').valueAsDate),
@@ -121,8 +120,17 @@
 					}),
 				"version": 0
 			};
-			console.log(requestData);
-			console.log(JSON.stringify(requestData, null, '\t'));
+			Http.post(URL + 'reservations', requestData).then(res => {
+				return res.json().then(data => {
+					if(res.ok) {
+						console.log(data);
+						window.location = `reservation.html?id=${data.id}&justcreated=true`;
+					} else {
+						console.log('Error');
+						console.log(data);
+					}
+				});
+			});
 		});
 		document.getElementById('dateFrom').valueAsDate = new Date();
 		document.getElementById('dateTo').valueAsDate = new Date(new Date().getTime() + 1000*60*60*24*7);

@@ -33,10 +33,12 @@
 		hideLoading();
 		const formatDateString = (dateString) => {
 			let [y, m, d] = dateString.split('T')[0].split('-');
-			return [m, d, y].join('.');
+			return [d, m, y].join('.');
 		}
 		const stringToDate = (dateString) => {
-			return new Date(formatDateString(dateString));
+			let [y, m, d] = dateString.split('T')[0].split('-');
+			let formatedString = [m, d, y].join('.');
+			return new Date(formatedString);
 		};
 		const roomsString = (n) => n === 1 ? 'pokój' : (n > 1 && n < 5) ? 'pokoje' : 'pokoi'; 
 		const createHtmlFromJson = json => 

@@ -87,7 +87,9 @@
 			return decodeURIComponent(results[2].replace(/\+/g, " "));
 	}
 	(function () {
-		var reservationId = getParameterByName('id');
+		let reservationId = getParameterByName('id');
+		let justCreated = getParameterByName('justcreated');
+		document.getElementById('justcreated').style.display = (justCreated === null || justCreated === 'false') ? 'none' : 'default';
 		if(reservationId === null) {
 			window.location = "my-reservations.html";
 		} else {
