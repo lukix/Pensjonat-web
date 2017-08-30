@@ -1,45 +1,15 @@
-const reservations = [
-	{
-		id: 420,
-		startDate: '11.08.2017',
-		endDate: '18.08.2017',
-		personsNumber: 4
-	},
-	{
-		id: 234,
-		startDate: '23.06.2017',
-		endDate: '07.07.2017',
-		personsNumber: 1
-	},
-	{
-		id: 126,
-		startDate: '11.05.2017',
-		endDate: '13.05.2017',
-		personsNumber: 5
-	}
-];
-
 (function () {
 	function getReservations() {
-		return Http.get(URL + 'reservations')
+		return Http.get(URL + 'reservations/guest/' + localStorage.guestId)
 			.then(res => {
 				return res.json().then((data) => {
 					if(res.ok) {
-						return reservations;
+						return data.reservations;
 					} else {
-						throw {error: data};
+						return {error: data};
 					}
-					/*
-					console.log('data:');
-					console.log(data);
-					*/
 				});
 			});
-		/*
-		return new Promise((resolve, reject) => {
-			resolve(reservations);
-		});
-		*/
 	}
 	function showLoading() {
 		document.querySelectorAll('.loading-message').forEach(item => {
@@ -58,20 +28,24 @@ const reservations = [
 			item.innerHTML = error.message;
 		});
 	}
-	function showReservations (reservations) {
+	function showReservations(reservations) {
+		console.log(reservations);
 		hideLoading();
-		const stringToDate = (string) => {
-			let [d, m, y] = string.split('.');
-			return new Date([m, d, y].join('.'));
+		const formatDateString = (dateString) => {
+			let [y, m, d] = dateString.split('T')[0].split('-');
+			return [m, d, y].join('.');
+		}
+		const stringToDate = (dateString) => {
+			return new Date(formatDateString(dateString));
 		};
-		const personsString = (n) => n === 1 ? 'osoba' : (n > 1 && n < 5) ? 'osoby' : 'osób'; 
+		const roomsString = (n) => n === 1 ? 'pokój' : (n > 1 && n < 5) ? 'pokoje' : 'pokoi'; 
 		const createHtmlFromJson = json => 
 			json.map(r => `<li>
 				<a href="reservation.html?id=${r.id}" style="color: black; text-decoration: none">
 					<div>
-						<div>Rezerwacja #${r.id}</div>
-						<div>${r.personsNumber} ${personsString(r.personsNumber)}</div>
-						<div>${r.startDate} - ${r.endDate}</div>
+						<div title="#${r.id}">Rezerwacja #${r.id.split('-')[0]}...</div>
+						<div>${r.accommodations.length} ${roomsString(r.accommodations.length)}</div>
+						<div>${formatDateString(r.startDate)} - ${formatDateString(r.endDate)}</div>
 					</div>
 				</a>
 			</li>`).join('');
@@ -83,12 +57,13 @@ const reservations = [
 		showLoading();
 		getReservations()
 		.then(reservations => {
-			hideLoading();
-			showReservations(reservations)
-		})
-		.catch(err => {
-			hideLoading();
-			showError(err.error);
+			if(reservations.error) {
+				hideLoading();
+				showError(err.error);
+			} else {
+				hideLoading();
+				showReservations(reservations)
+			}
 		});
 	})();
 })();
