@@ -49,8 +49,11 @@
 					</div>
 				</a>
 			</li>`).join('');
-		document.querySelector('#currentReservations').innerHTML = createHtmlFromJson(reservations.filter(r => stringToDate(r.endDate).getTime() >  new Date().getTime()));
-		document.querySelector('#historyReservations').innerHTML = createHtmlFromJson(reservations.filter(r => stringToDate(r.endDate).getTime() <= new Date().getTime()));
+		
+		let currentReservations = reservations.filter(r => stringToDate(r.endDate).getTime() >  new Date().getTime());
+		let historyReservations = reservations.filter(r => stringToDate(r.endDate).getTime() <= new Date().getTime());
+		document.querySelector('#currentReservations').innerHTML = currentReservations.length === 0 ? 'Brak rezerwacji' : createHtmlFromJson(currentReservations);
+		document.querySelector('#historyReservations').innerHTML = historyReservations.length === 0 ? 'Historia rezerwacji jest pusta' : createHtmlFromJson(historyReservations);
 	}
 
 	(function () {

@@ -1,53 +1,80 @@
-/*
-const reservationData = {
-	id: 420,
-	startDate: '11.08.2017',
-	endDate: '18.08.2017',
-	personsNumber: 4
-};
-*/
-const reservationData = {
-  "id": "C56A4180-65AA-42EC-A945-5FD21DEC0538",
-  "startDate": "2017-08-12T11:46:45.554Z",
-  "endDate": "2017-08-23T11:46:45.554Z",
-  "guestId": "12345",
-  "accommodations": [
-    {
-      "roomId": "101",
-      "meals": [
-        "string"
-      ],
-      "services": [
-        "string"
-      ]
-		},
-		{
-      "roomId": "102",
-      "meals": [
-        "string"
-      ],
-      "services": [
-        "string"
-      ]
-    }
-  ],
-};
-
 (function () {
 	function getReservationData(reservationId) {
-		return new Promise((resolve, reject) => {
-			resolve(reservationData);
-		});
+		return Http.get(URL + 'reservations/' + reservationId)
+			.then(res => {
+				return res.json().then(data => {
+					if(res.ok) {
+						return data;
+					} else {
+						return {error: data};
+					}
+					return data;
+				});
+			})
+			.then(reservationData => {
+				if(reservationData.error) return reservationData;
+				return Promise.all(reservationData.accommodations.map((accommodation) => {
+					return Http.get(URL + 'rooms/' + accommodation.roomId)
+						.then(res => res.json());
+				})).then(rooms => {
+					reservationData.accommodations = reservationData.accommodations
+						.map((accommodation, index) => Object.assign({}, accommodation, {room: rooms[index]}));
+					return reservationData;
+				});
+			});
 	}
-	function showReservationData(reservationData) {
-		const formatDate = (date) => new Date(date).toISOString().slice(0,10);
+	function getMeals() {
+		return Http.get(URL + 'meals').then(res => {
+			return res.json();
+		}).then(data => {
+			return data.meals;
+		})
+	}
+	function showReservationData(reservationData, mealsList) {
+		let createRoomsListItem = (room, meals, mealsList, editable) => {
+			console.log(room)
+			console.log(mealsList);
+			let item = document.createElement('li');
+			item.innerHTML = (`
+				<div class="date">
+					<span>${room.number}</span>
+				</div>
+				<ul>
+					<li>${room.sleepPlaceAmount} osobowy</li>
+					<li>Cena za dobę: ${room.price}zł</li>
+					<li>
+						Wyposażenie:
+						${
+							room.assets.length > 0
+							? room.assets.map((asset) => `<span title="${asset.description}">${asset.name}</abbr>`).join(', ')
+							: 'Brak dodatkowego wyposażenia'
+						}
+					</li>
+					<li class="meals">
+						Posiłki:
+						${
+							meals.length === 0
+							? 'Brak'
+							: meals.map((mealId, index) => {
+								let meal = mealsList.find(meal => meal.id === mealId);
+								return meal.name;
+							}).join(', ')
+						}
+					</li>
+				</ul>
+			`);
+			return item;
+		}
+
+		reservationData.accommodations
+			.map(accommodation => createRoomsListItem(accommodation.room, accommodation.meals, mealsList, true))
+			.forEach(room => document.querySelector('#reservedRooms').appendChild(room));
+
+		const formatDate = (date) => new Date(date).toLocaleDateString().slice(0,10);
 		document.querySelector('#reservationData').innerHTML = `
 			Rezerwacja od ${formatDate(reservationData.startDate)}
 			do ${formatDate(reservationData.endDate)}.<br />
 			Pokoje:
-			<ul>
-				${reservationData.accommodations.map(accomodation => `<li>Pokój ${accomodation.roomId}, 3 osoby</li>`).join('')}
-			</ul>
 		`;
 	}
 	function getParameterByName(name, url) {
@@ -65,8 +92,10 @@ const reservationData = {
 			window.location = "my-reservations.html";
 		} else {
 			document.querySelector('#reservationId').innerHTML = reservationId;
-			getReservationData(reservationId).then(reservationData => {
-				showReservationData(reservationData);
+			Promise.all([getReservationData(reservationId), getMeals()]).then(([reservationData, meals]) => {
+				console.log(reservationData);
+				console.log(meals);
+				showReservationData(reservationData, meals);
 			});
 		}
 		document.querySelector('#cancelReservationBtn').addEventListener('click', function () {
