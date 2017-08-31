@@ -1,4 +1,17 @@
 (function () {
+	let state = {
+		reservation: {accommodations: []},
+		availableRooms: [],
+		meals: []
+	};
+	function render() {
+		showRooms(state.rooms);
+	}
+	function setState(obj) {
+		state = Object.assign({}, state, obj);
+	}
+	const formatDate = (date) => date.toLocaleString().split(',')[0].split('.').reverse().join('-');
+
 	function getReservationData(reservationId) {
 		return Http.get(URL + 'reservations/' + reservationId)
 			.then(res => {
@@ -23,6 +36,16 @@
 				});
 			});
 	}
+	function getAvailableRooms(startDate, endDate) {
+		let fromDate = startDate;
+		let untilDate = endDate;
+		return Http.get(URL + 'rooms/aviable' + `?FromDate=${formatDate(fromDate)}&UntilDate=${formatDate(untilDate)}`)
+			.then(res => {
+				return res.json();
+			}).then(data => {
+				return data.rooms;
+			});
+	}
 	function getMeals() {
 		return Http.get(URL + 'meals').then(res => {
 			return res.json();
@@ -30,10 +53,12 @@
 			return data.meals;
 		})
 	}
-	function showReservationData(reservationData, mealsList) {
-		let createRoomsListItem = (room, meals, mealsList, editable) => {
-			console.log(room)
-			console.log(mealsList);
+	function showRooms() {
+		const stringToDate = (string) => {
+			let [d, m, y] = string.split('.');
+			return new Date([m, d, y].join('.'));
+		};
+		let createRoomsListItem = (room, editable, meals) => {
 			let item = document.createElement('li');
 			item.innerHTML = (`
 				<div class="date">
@@ -51,40 +76,89 @@
 						}
 					</li>
 					<li class="meals">
-						Posiłki:
-						${
-							meals.length === 0
-							? 'Brak'
-							: meals.map((mealId, index) => {
-								let meal = mealsList.find(meal => meal.id === mealId);
-								return meal.name;
-							}).join(', ')
-						}
+						${!editable ? '' : state.meals.map((meal, index) =>
+							`<label title="${meal.description}">
+								<input type="checkbox" ${editable ? (meals.find(mealId => mealId === meal.id) !== undefined ? 'checked' : '') : ''}>
+								&nbsp;${meal.name}&nbsp;(+${meal.price}zł)
+							</label>`).join(' ')}
 					</li>
 				</ul>
+				<div class="action">
+					<a href="">
+						${editable ? 'Usuń z rezerwacji' : 'Dodaj do rezerwacji'}
+					</a>
+				</div>
 			`);
+			item.querySelectorAll('input[type=checkbox]').forEach((checkbox, checkboxIndex) => {
+				checkbox.addEventListener('click', e => {
+					console.log(e.target.checked);
+					let accommodation = state.reservation.accommodations.find(accommodation => accommodation.roomId === room.id);
+					if(e.target.checked) {
+						accommodation.meals.push(state.meals[checkboxIndex].id);
+					} else {
+						accommodation.meals = accommodation.meals.filter(mealId => mealId !== state.meals[checkboxIndex].id);
+					}
+					updateReservations();
+				});
+			});
+			item.querySelector('.action>a').addEventListener('click', (e) => {
+				e.preventDefault();
+				if(editable) {
+					//Usuwanie z rezerwacji
+					state.reservation.accommodations = state.reservation.accommodations
+						.filter(accommodation => accommodation.roomId !== room.id);
+				} else {
+					//Dodawanie do rezerwacji
+					state.reservation.accommodations.push({
+						meals: [],
+						roomId: room.id,
+						services: [],
+						status: 'Created'
+					});
+				}
+				updateReservations();
+			});
 			return item;
-		}
+		};
 
-		reservationData.accommodations
-			.map(accommodation => createRoomsListItem(accommodation.room, accommodation.meals, mealsList, true))
+		document.querySelector('p#no-rooms-found').style.display =
+			state.availableRooms.length === 0 ? 'block' : 'none';
+
+		document.querySelector('#allRooms').innerHTML = '';
+		state.availableRooms
+			.map(room => createRoomsListItem(room, false))
+			.forEach(room => document.querySelector('#allRooms').appendChild(room));
+
+		document.querySelector('#reservedRooms').innerHTML = '';
+		state.reservation.accommodations
+			.map(accommodation => createRoomsListItem(accommodation.room, true, accommodation.meals))
 			.forEach(room => document.querySelector('#reservedRooms').appendChild(room));
-
-		const formatDate = (date) => new Date(date).toLocaleDateString().slice(0,10);
-		document.querySelector('#reservationData').innerHTML = `
-			Rezerwacja od ${formatDate(reservationData.startDate)}
-			do ${formatDate(reservationData.endDate)}.<br />
-			Pokoje:
-		`;
 	}
 	function getParameterByName(name, url) {
-			if (!url) url = window.location.href;
-			name = name.replace(/[\[\]]/g, "\\$&");
-			var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-					results = regex.exec(url);
-			if (!results) return null;
-			if (!results[2]) return '';
-			return decodeURIComponent(results[2].replace(/\+/g, " "));
+		if (!url) url = window.location.href;
+		name = name.replace(/[\[\]]/g, "\\$&");
+		var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+				results = regex.exec(url);
+		if (!results) return null;
+		if (!results[2]) return '';
+		return decodeURIComponent(results[2].replace(/\+/g, " "));
+	}
+	function updateReservations() {
+		state.reservation.accommodations.forEach(accommodation => {
+			delete accommodation.room;
+		})
+		let reservationId = state.reservation.id;
+		delete state.reservation.id;
+		console.log(state.reservation);
+		Http.put(URL + 'reservations/' + reservationId, state.reservation)
+			.then(res => {
+				if(res.ok) {
+					console.log('update ok');
+				} else {
+					console.log('update error');
+				}
+				window.location.reload();
+			});
 	}
 	(function () {
 		let reservationId = getParameterByName('id');
@@ -94,14 +168,15 @@
 			window.location = "my-reservations.html";
 		} else {
 			document.querySelector('#reservationId').innerHTML = reservationId;
-			Promise.all([getReservationData(reservationId), getMeals()]).then(([reservationData, meals]) => {
-				console.log(reservationData);
-				console.log(meals);
-				showReservationData(reservationData, meals);
+			getReservationData(reservationId).then(reservationData => {
+				return Promise.all([getAvailableRooms(reservationData.startDate, reservationData.endDate), getMeals()]).then(([roomsData, meals]) => {
+					console.log(reservationData);
+					setState({availableRooms: roomsData, meals: meals, reservation: reservationData});
+					render();
+				});
 			});
 		}
-		document.querySelector('#cancelReservationBtn').addEventListener('click', function () {
-			console.log('Anulowanie rezerwacji #' + reservationId);
-		});
+
+		render();
 	})();
 })();

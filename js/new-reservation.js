@@ -105,8 +105,8 @@
 		});
 		document.querySelector('#reserveBtn').addEventListener('click', function () {
 			let requestData = {
-				"startDate": formatDate(document.getElementById('dateFrom').valueAsDate),//"2017-08-27T19:34:32.156Z",
-				"endDate": formatDate(document.getElementById('dateTo').valueAsDate),
+				"startDate": formatDate(document.getElementById('dateFrom').valueAsDate) + 'T00:00:00',//"2017-08-27T19:34:32.156Z",
+				"endDate": formatDate(document.getElementById('dateTo').valueAsDate) + 'T00:00:00',
 				"guestId": localStorage.guestId,
 				"accommodations": state.rooms
 					.filter(room => room.selected)
