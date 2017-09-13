@@ -176,7 +176,12 @@
 				});
 			});
 		}
-
+		document.getElementById('cancelBtn').addEventListener('click', () => {
+			Http.delete(URL + 'reservations/' + reservationId, {version: 0})
+				.then(res => {
+					window.location = "my-reservations.html";
+				});
+		});
 		render();
 	})();
 })();
