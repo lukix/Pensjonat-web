@@ -58,7 +58,7 @@
 			let [d, m, y] = string.split('.');
 			return new Date([m, d, y].join('.'));
 		};
-		let createRoomsListItem = (room, editable, meals) => {
+		let createRoomsListItem = (room, {showMeals, mealsEditable, enableAddRemove, isReserved}, meals) => {
 			let item = document.createElement('li');
 			item.innerHTML = (`
 				<div class="date">
@@ -76,17 +76,20 @@
 						}
 					</li>
 					<li class="meals">
-						${!editable ? '' : state.meals.map((meal, index) =>
+						${!showMeals ? '' : state.meals.map((meal, index) =>
 							`<label title="${meal.description}">
-								<input type="checkbox" ${editable ? (meals.find(mealId => mealId === meal.id) !== undefined ? 'checked' : '') : ''}>
+								<input type="checkbox" ${mealsEditable ? '' : 'disabled'} ${showMeals ? (meals.find(mealId => mealId === meal.id) !== undefined ? 'checked' : '') : ''}>
 								&nbsp;${meal.name}&nbsp;(+${meal.price}zł)
 							</label>`).join(' ')}
 					</li>
 				</ul>
 				<div class="action">
-					<a href="">
-						${editable ? 'Usuń z rezerwacji' : 'Dodaj do rezerwacji'}
-					</a>
+					${!enableAddRemove
+						? ''
+						: `<a href="">
+								${isReserved ? 'Usuń z rezerwacji' : 'Dodaj do rezerwacji'}
+							</a>`
+					}
 				</div>
 			`);
 			item.querySelectorAll('input[type=checkbox]').forEach((checkbox, checkboxIndex) => {
@@ -101,37 +104,42 @@
 					updateReservations();
 				});
 			});
-			item.querySelector('.action>a').addEventListener('click', (e) => {
-				e.preventDefault();
-				if(editable) {
-					//Usuwanie z rezerwacji
-					state.reservation.accommodations = state.reservation.accommodations
-						.filter(accommodation => accommodation.roomId !== room.id);
-				} else {
-					//Dodawanie do rezerwacji
-					state.reservation.accommodations.push({
-						meals: [],
-						roomId: room.id,
-						services: [],
-						status: 'Created'
-					});
-				}
-				updateReservations();
-			});
+			if(enableAddRemove) {
+				item.querySelector('.action>a').addEventListener('click', (e) => {
+					e.preventDefault();
+					if(isReserved) {
+						//Usuwanie z rezerwacji
+						state.reservation.accommodations = state.reservation.accommodations
+							.filter(accommodation => accommodation.roomId !== room.id);
+					} else {
+						//Dodawanie do rezerwacji
+						state.reservation.accommodations.push({
+							meals: [],
+							roomId: room.id,
+							services: [],
+							status: 'Created'
+						});
+					}
+					updateReservations();
+				});
+			}
+
 			return item;
 		};
+
+		let isReservationActive = !isDatePast(state.reservation.startDate);
 
 		document.querySelector('p#no-rooms-found').style.display =
 			state.availableRooms.length === 0 ? 'block' : 'none';
 
 		document.querySelector('#allRooms').innerHTML = '';
 		state.availableRooms
-			.map(room => createRoomsListItem(room, false))
+			.map(room => createRoomsListItem(room, {showMeals: false, enableAddRemove: true, isReserved: false}))
 			.forEach(room => document.querySelector('#allRooms').appendChild(room));
 
 		document.querySelector('#reservedRooms').innerHTML = '';
 		state.reservation.accommodations
-			.map(accommodation => createRoomsListItem(accommodation.room, true, accommodation.meals))
+			.map(accommodation => createRoomsListItem(accommodation.room, {showMeals: true, mealsEditable: isReservationActive, enableAddRemove: isReservationActive, isReserved: true}, accommodation.meals))
 			.forEach(room => document.querySelector('#reservedRooms').appendChild(room));
 	}
 	function getParameterByName(name, url) {
@@ -160,6 +168,18 @@
 				window.location.reload();
 			});
 	}
+	function isDatePast(date) {
+		let now = new Date();
+		now.setHours(0, 0, 0, 0);
+		return new Date(date) < now
+	}
+	function showEditFields(date) {
+		if(!isDatePast(date)) {
+			document.querySelectorAll('.edit-field').forEach(element => {
+				element.style.display = 'block';
+			});
+		}
+	}
 	(function () {
 		let reservationId = getParameterByName('id');
 		let justCreated = getParameterByName('justcreated');
@@ -173,6 +193,7 @@
 					console.log(reservationData);
 					setState({availableRooms: roomsData, meals: meals, reservation: reservationData});
 					render();
+					showEditFields(reservationData.startDate);
 				});
 			});
 		}

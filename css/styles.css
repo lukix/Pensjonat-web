@@ -233,3 +233,6 @@ input[type=submit], input[type=button]{
 div.your-reservation {
 	margin-bottom: 40px;
 }
+.edit-field {
+	display: none;
+}
