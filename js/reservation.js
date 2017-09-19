@@ -6,6 +6,11 @@
 	};
 	function render() {
 		showRooms(state.rooms);
+		document.getElementById('reservation-info').innerHTML = `
+			Data rozpoczęcia: ${state.reservation.startDate.split('T')[0]}<br />
+			Data zakończenia: ${state.reservation.endDate.split('T')[0]}<br />
+			Cena: ... (Zapłacone/Do zapłacenia)
+		`;
 	}
 	function setState(obj) {
 		state = Object.assign({}, state, obj);
