@@ -46,6 +46,10 @@
 			isValid = false;
 			inputs.postalCode.setValidationMessage('Nieprawidłowy kod pocztowy');
 		}
+		if(inputs.password !== undefined && inputs.repeatPassword !== undefined && inputs.password.value !== inputs.repeatPassword.value) {
+			isValid = false;
+			inputs.repeatPassword.setValidationMessage('Podane hasła nie są zgodne');
+		}
 		return isValid;
 	}
 	document.getElementById('signUpForm').addEventListener('submit', function (e) {
@@ -72,7 +76,6 @@
 					mappedInputs.houseNumber.value
 				].join(', ')
 			};
-			console.log(data);
 			Http.post(URL + 'guests', data)
 				.then(res => {
 					if(res.ok) {
