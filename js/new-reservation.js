@@ -97,11 +97,22 @@
 
 	(function () {
 		document.querySelector('#searchRoomsBtn').addEventListener('click', function () {
-			Promise.all([getAvailableRooms(), getMeals()]).then(([roomsData, meals]) => {
-				console.log(meals);
-				setState({rooms: roomsData, meals: meals});
+			const dateFrom = document.getElementById('dateFrom').valueAsDate;
+			const dateTo = document.getElementById('dateTo').valueAsDate;
+			let todayDate = new Date();
+			todayDate.setHours(0,0,0,0);
+			if(dateFrom > dateTo || dateFrom < todayDate) {
+				document.getElementById('date-error-message').style.display = 'block';
+				setState({rooms: [], meals: []});
 				render();
-			});
+			} else {
+				document.getElementById('date-error-message').style.display = 'none';
+				Promise.all([getAvailableRooms(), getMeals()]).then(([roomsData, meals]) => {
+					console.log(meals);
+					setState({rooms: roomsData, meals: meals});
+					render();
+				});
+			}
 		});
 		document.querySelector('#reserveBtn').addEventListener('click', function () {
 			let requestData = {

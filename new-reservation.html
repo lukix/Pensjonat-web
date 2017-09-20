@@ -34,6 +34,11 @@
 					Data zakończenia:<br /><input type="date" id="dateTo" /><br /><br />
 					<input type="button" value="Szukaj" id="searchRoomsBtn" />
 				</p>
+				<p id="date-error-message" style="display: none; color: red; text-align: left">
+					Nieprawidłowy zakres dat.<br />
+					1) Data zakończenia musi być większa od daty rozpoczęcia rezerwacji.<br />
+					2) Rezerwacja musi się rozpoczynać nie wcześniej niż dzisiaj.
+				</p>
 				<div class="your-reservation">
 					<h2>Twoja rezerwacja</h2>
 					<ul class="rooms" id="reservedRooms"></ul>
