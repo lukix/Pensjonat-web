@@ -1,0 +1,81 @@
+<html>
+	<head>
+		<meta charset="utf8">
+		<title>Pensjonat</title>
+		<link rel="stylesheet" href="css/font-awesome-4.7.0/css/font-awesome.min.css" />
+		<link rel="stylesheet" href="css/index.css" />
+	</head>
+	<body>
+		<div class="container">
+			<header>
+				<div>
+					<h1>Pensjonat  „U Turinga”</h1>
+				</div>
+				<div>
+					<i class="fa fa-sign-in" aria-hidden="true"></i> 
+					<a href="my-reservations.html">Panel rezerwacji</a>
+				</div>
+			</header>
+			<div id="content">
+				<section>
+					<h2>O pensjonacie</h2>
+					<p>
+							Pensjonat  „U Turinga” to wyjątkowe miejsce powstałe na cześć osoby uważanej za ojca sztucznej inteligencji - <b>Alana Mathisona Turinga</b>.
+							Otwarcie miało miejsce w 105 rocznicę jego urodzin - 23 czerwca 2017 roku. W zakamarkach naszego pensjonatu możecie Państwo znaleźć przedmioty nawiązujące
+							do twórczości słynnego matematyka, a w dostępnej dla gości biblioteczce można zapoznać się z książkami omawiającymi zagadnienia z dziedzin takich jak m.in:
+							matematyka, kryptologia, informatyka, sztuczna inteligencja.
+					</p>
+				</section>
+				<section class="odd">
+					<h2>Rezerwacja pokoi</h2>
+					<p>
+							Rezerwacji można dokonać telefonicznie pod numerem +00 000 000 000 lub korzystając z naszego <a href="sign-up.html">systemu rezerwacji online</a>.
+							Do państwa dyspozycji są pokoje w nowo postawionym budynku, o eleganckim i przytulnym wystroju, których wyjątkowa atmosfera sprawi, że zapamiętacie pobyt u nas przez długi czas.
+							Oferujemy również bogaty zestaw posiłków, których przygotowaniem zajmują się nasi najlepsi kucharze.
+					</p>
+				</section>
+				<section>
+					<h2>Galeria</h2>
+					<p>
+							Oto kilka zdjęć przedstawiających wnętrze naszego pensjonatu:
+					</p>
+				</section>
+				<section style="width: 100%; margin-top: -30px">
+					<div class="images">
+						<img src="img/hall.jpeg" />
+						<img src="img/room.jpeg" />
+						<img src="img/room-enter.jpeg" />
+					</div>
+				</section>
+				<section class="odd">
+					<h2>Lokalizacja i dojazd</h2>
+					<p>
+							Nasz pensjonat położony jest niemal na samym końcu Mierzei Helskiej, niedaleko takich miejsc jak m.in. Port, Fokarium, Park Wydmowy, Latarnia Morska.
+							Doskonała lokalizacja pozwala na sprawny dojazd drogą 216 lub promem do pobliskiego portu.
+					</p>
+					<div id="map"></div>
+				</section>
+			</div>
+			<footer>
+				Tel.: +00 000 000 000<br />
+				E-mail: uturinga@pensjonat.pl
+			</footer>
+		</div>
+		<script>
+			function initMap() {
+				var hotelPos = {lat: 54.606226, lng: 18.801156};
+				var map = new google.maps.Map(document.getElementById('map'), {
+					zoom: 8,
+					center: hotelPos
+				});
+				var marker = new google.maps.Marker({
+					position: hotelPos,
+					map: map
+				});
+			}
+		</script>
+		<script async defer
+		src="https://maps.googleapis.com/maps/api/js?key=AIzaSyALKzHTBkfCX05XocsE0crY8y5CiNKwT9I&callback=initMap">
+		</script>
+	</body>
+</html>

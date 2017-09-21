@@ -1,0 +1,88 @@
+@font-face {
+	font-family: DevinneCondensed2;
+	src: url(../assets/Devinne_Condensed_2.ttf);
+}
+html, body {
+	margin: 0;
+	padding: 0;
+}
+body {
+	background: #777980;
+	text-align: center;
+}
+.container {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	width: 1100px;
+	background-color: #EDEEF8;
+	box-shadow: #646464 0 0 10px 5px;
+	padding: 0;
+	margin: 0px auto;
+	text-align: left;
+}
+header {
+	background: #4B99AD;
+	margin: 0;
+	padding: 20px;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+	color: white;
+}
+footer {
+	background: #4B99AD;
+	margin: 0;
+	padding: 20px;
+	height: 50px;
+	color: white;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	align-items: center;
+}
+h1 {
+	margin: 0;
+	font-size: 2.6rem;
+}
+h2 {
+	font-size: 2.0rem;
+}
+#content > section {
+	width: 80%;
+	float: left;
+}
+#content > section.odd {
+	float: right;
+	text-align: right;
+}
+
+#content p {
+	text-align: justify;
+}
+#content {
+	padding: 40px;
+}
+header a {
+	color: white;
+}
+a {
+	color: #4B99AD;
+}
+.images {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	height: 200px;
+}
+.images img {
+	height: 200px;
+}
+section {
+	margin-bottom: 40px;
+}
+#map {
+	height: 400px;
+	width: 100%;
+ }
