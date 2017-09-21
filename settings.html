@@ -28,7 +28,7 @@
 			</div>
 			<div class="content">
 				<h2>Ustawienia</h2>
-				<form id="signUpForm" class="form-style-1" novalidate>
+				<form id="editGuestPasswordForm" class="form-style-1" novalidate>
 					<fieldset>
 						<legend>Dane konta:</legend>
 						<ul>
@@ -39,7 +39,7 @@
 							</li>
 							<li>
 								<label>Powtórz nowe hasło <span class="required">*</span></label>
-								<input type="password" name="password" class="field-long" />
+								<input type="password" name="repeatPassword" class="field-long" />
 								<span class="validation-message">Pole nie jest wypełnione poprawnie</span>
 							</li>
 						</ul>
@@ -56,17 +56,39 @@
 					</ul>
 				</form>
 				<hr />
-				<form id="signUpForm" class="form-style-1" novalidate>
+				<form id="editGuestDataForm" class="form-style-1" novalidate>
 					<fieldset>
 						<legend>Dane osobowe:</legend>
 						<ul>
 							<li>
+								<label>Imię i nazwisko <span class="required">*</span></label><input type="text" name="name" class="field-divided" placeholder="Imię" />&nbsp;<input type="text" name="surname" class="field-divided" placeholder="Nazwisko" />
+								<span class="validation-message">Pole nie jest wypełnione poprawnie</span>
+							</li>
+							<li>
+								<label>E-mail <span class="required">*</span></label>
+								<input type="email" name="email" class="field-long" />
+								<span class="validation-message">Pole nie jest wypełnione poprawnie</span>
+							</li>
+							<li>
 								<label>Numer i seria dowodu <span class="required">*</span></label>
-								<input type="text" pattern="[0-9]{11}" name="idcard" class="field-long" />
+								<input type="text" disabled pattern="[0-9]{11}" name="idcard" class="field-long" />
 								<span class="validation-message">Pole nie jest wypełnione poprawnie</span>
 							</li>
 						</ul>
 					</fieldset>
+					<ul>
+						<li style="display: none">
+							<p style="color: red">
+								Wystąpił nieznany błąd!
+							</p>
+						</li>
+						<li>
+							<input type="submit" value="Zapisz zmiany" />
+						</li>
+					</ul>
+				</form>
+				<hr />
+				<form id="editGuestAddressForm" class="form-style-1" novalidate>
 					<fieldset>
 						<legend>Adres zamieszkania:</legend>
 						<ul>
@@ -108,5 +130,6 @@
 		<script src="js/URL.js"></script>
 		<script src="js/Http.js"></script>
 		<script src="js/authenticate.js"></script>
+		<script src="js/settings.js"></script>
 	</body>
 </html>
