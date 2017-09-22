@@ -67,7 +67,7 @@
 				email: mappedInputs.email.value,
 				password: mappedInputs.password.value,
 				pesel: mappedInputs.pesel.value,
-				birthday: '2017-08-12T22:52:53.568Z',
+				birthday: getDateStringFromPESEL(mappedInputs.pesel.value),
 				address: [
 					mappedInputs.country.value,
 					mappedInputs.postalCode.value,
@@ -126,5 +126,31 @@
 			prev[current.name] = { value: current.value, parent: current.parent, setInvalidState: current.setInvalidState, setValidationMessage: current.setValidationMessage };
 			return prev;
 		}, {});
+	}
+	function getDateStringFromPESEL(pesel) {
+		[year, month, day] = [
+			pesel.substr(0, 2),
+			parseInt(pesel.substr(2, 2)),
+			pesel.substr(4, 2)
+		];
+		if(month > 80) {
+			year = '18' + year;
+		} else if(month > 60) {
+			year = '22' + year
+		} else if(month > 40) {
+			year = '21' + year
+		} else if(month > 20) {
+			year = '20' + year
+		} else {
+			year = '19' + year
+		}
+		month = month % 20;
+		if((month+'').length === 1) {
+			month = '0' + month;
+		}
+		if((day+'').length === 1) {
+			day = '0' + day;
+		}
+		return [year, month, day].join('-');
 	}
 })();
