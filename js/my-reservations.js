@@ -45,7 +45,7 @@
 			json.map(r => `<li>
 				<a href="reservation.html?id=${r.id}" style="color: black; text-decoration: none">
 					<div>
-						<div title="#${r.id}">Rezerwacja #${r.id.split('-')[0]}...</div>
+						<div title="#${r.id}">Rezerwacja #${r.reservationNumber}</div>
 						<div>${r.accommodations.length} ${roomsString(r.accommodations.length)}</div>
 						<div>${formatDateString(r.startDate)} - ${formatDateString(r.endDate)}</div>
 					</div>

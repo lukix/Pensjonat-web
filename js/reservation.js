@@ -192,10 +192,10 @@
 		if(reservationId === null) {
 			window.location = "my-reservations.html";
 		} else {
-			document.querySelector('#reservationId').innerHTML = reservationId;
 			getReservationData(reservationId).then(reservationData => {
 				return Promise.all([getAvailableRooms(reservationData.startDate, reservationData.endDate), getMeals()]).then(([roomsData, meals]) => {
 					console.log(reservationData);
+					document.querySelector('#reservationId').innerHTML = reservationData.reservationNumber;
 					setState({availableRooms: roomsData, meals: meals, reservation: reservationData});
 					render();
 					showEditFields(reservationData.startDate);
