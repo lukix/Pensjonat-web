@@ -153,4 +153,19 @@
 		}
 		return [year, month, day].join('-');
 	}
+
+	//City autocomplete
+	(function () {
+		const $city = document.querySelector('#signUpForm input[name="city"]');
+
+		let autocomplete = new google.maps.places.Autocomplete(($city), {
+			types: ['(cities)'],
+			componentRestrictions: {'country': 'pl'}
+		});
+
+		$city.addEventListener('keypress', (e) => {
+			if(e.keyCode === 13) e.preventDefault();
+		});
+		
+	})();
 })();

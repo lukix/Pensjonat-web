@@ -176,4 +176,19 @@
 		document.querySelector('#editGuestAddressForm input[name="houseNumber"]').value = houseNumber;
 		document.querySelector('#editGuestAddressForm input[name="postalCode"]').value = postalCode;
 	}
+
+	//City autocomplete
+	(function () {
+		const $city = document.querySelector('#editGuestAddressForm input[name="city"]');
+
+		let autocomplete = new google.maps.places.Autocomplete(($city), {
+			types: ['(cities)'],
+			componentRestrictions: {'country': 'pl'}
+		});
+
+		$city.addEventListener('keypress', (e) => {
+			if(e.keyCode === 13) e.preventDefault();
+		});
+		
+	})();
 })();
