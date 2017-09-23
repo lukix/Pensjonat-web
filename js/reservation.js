@@ -6,10 +6,13 @@
 	};
 	function render() {
 		showRooms(state.rooms);
+
+		const payment = state.reservation.accommodations.map(accommodation => accommodation.payment).reduce(((prev, curr) => prev+curr), 0);
+		const paid = state.reservation.accommodations.some(accommodation => accommodation.status.toLowerCase() === 'paid');
 		document.getElementById('reservation-info').innerHTML = `
 			Data rozpoczęcia: ${state.reservation.startDate.split('T')[0]}<br />
 			Data zakończenia: ${state.reservation.endDate.split('T')[0]}<br />
-			Cena: ... (Zapłacone/Do zapłacenia)
+			Cena: ${payment}zł (${paid ? 'Zapłacone' : 'Do zapłacenia'})
 		`;
 	}
 	function setState(obj) {
