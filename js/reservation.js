@@ -8,7 +8,7 @@
 		showRooms(state.rooms);
 
 		const payment = state.reservation.accommodations.map(accommodation => accommodation.payment).reduce(((prev, curr) => prev+curr), 0);
-		const paid = state.reservation.accommodations.some(accommodation => accommodation.status.toLowerCase() === 'paid');
+		const paid = isReservationPaid(state.reservation);
 		document.getElementById('reservation-info').innerHTML = `
 			Data rozpoczęcia: ${state.reservation.startDate.split('T')[0]}<br />
 			Data zakończenia: ${state.reservation.endDate.split('T')[0]}<br />
@@ -106,8 +106,10 @@
 					let accommodation = state.reservation.accommodations.find(accommodation => accommodation.roomId === room.id);
 					if(e.target.checked) {
 						accommodation.meals.push(state.meals[checkboxIndex].id);
+						accommodation.payment += state.meals[checkboxIndex].price;
 					} else {
 						accommodation.meals = accommodation.meals.filter(mealId => mealId !== state.meals[checkboxIndex].id);
+						accommodation.payment -= state.meals[checkboxIndex].price;
 					}
 					updateReservations();
 				});
@@ -121,11 +123,14 @@
 							.filter(accommodation => accommodation.roomId !== room.id);
 					} else {
 						//Dodawanie do rezerwacji
+						const duration = (new Date(state.reservation.endDate).getTime() - new Date(state.reservation.startDate).getTime()) / (1000*60*60*24);
+
 						state.reservation.accommodations.push({
 							meals: [],
 							roomId: room.id,
 							services: [],
-							status: 'Created'
+							status: 'Created',
+							payment: room.price * duration
 						});
 					}
 					updateReservations();
@@ -135,7 +140,7 @@
 			return item;
 		};
 
-		let isReservationActive = !isDatePast(state.reservation.startDate);
+		let isReservationActive = !isDatePast(state.reservation.startDate) && !isReservationPaid(state.reservation);
 
 		document.querySelector('p#no-rooms-found').style.display =
 			state.availableRooms.length === 0 ? 'block' : 'none';
@@ -176,13 +181,16 @@
 				window.location.reload();
 			});
 	}
+	function isReservationPaid(reservation) {
+		return state.reservation.accommodations.some(accommodation => accommodation.status.toLowerCase() === 'paid');
+	}
 	function isDatePast(date) {
 		let now = new Date();
 		now.setHours(0, 0, 0, 0);
 		return new Date(date) < now
 	}
-	function showEditFields(date) {
-		if(!isDatePast(date)) {
+	function showEditFields(date, reservation) {
+		if(!isDatePast(date) && !isReservationPaid(reservation)) {
 			document.querySelectorAll('.edit-field').forEach(element => {
 				element.style.display = 'block';
 			});
@@ -201,7 +209,7 @@
 					document.querySelector('#reservationId').innerHTML = reservationData.reservationNumber;
 					setState({availableRooms: roomsData, meals: meals, reservation: reservationData});
 					render();
-					showEditFields(reservationData.startDate);
+					showEditFields(reservationData.startDate, reservationData);
 				});
 			});
 		}
