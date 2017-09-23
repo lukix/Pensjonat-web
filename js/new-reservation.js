@@ -1,7 +1,9 @@
 (function () {
 	let state = {
 		rooms: [],
-		meals: []
+		meals: [],
+		dateFrom: new Date(),
+		dateTo: new Date()
 	};
 	function render() {
 		showRooms(state.rooms);
@@ -103,34 +105,44 @@
 			todayDate.setHours(0,0,0,0);
 			if(dateFrom > dateTo || dateFrom < todayDate) {
 				document.getElementById('date-error-message').style.display = 'block';
-				setState({rooms: [], meals: []});
+				setState({rooms: [], meals: [], dateFrom, dateTo});
 				render();
 			} else {
 				document.getElementById('date-error-message').style.display = 'none';
 				Promise.all([getAvailableRooms(), getMeals()]).then(([roomsData, meals]) => {
 					console.log(meals);
-					setState({rooms: roomsData, meals: meals});
+					setState({rooms: roomsData, meals: meals, dateFrom, dateTo});
+					console.log(state);
 					render();
 				});
 			}
 		});
 		document.querySelector('#reserveBtn').addEventListener('click', function () {
 			let requestData = {
-				"startDate": formatDate(document.getElementById('dateFrom').valueAsDate) + 'T00:00:00',//"2017-08-27T19:34:32.156Z",
-				"endDate": formatDate(document.getElementById('dateTo').valueAsDate) + 'T00:00:00',
+				"startDate": formatDate(state.dateFrom) + 'T00:00:00',//"2017-08-27T19:34:32.156Z",
+				"endDate": formatDate(state.dateTo) + 'T00:00:00',
 				"guestId": localStorage.guestId,
 				"accommodations": state.rooms
 					.filter(room => room.selected)
 					.map(room => {
 						return {
 							"roomId": room.id,
-							"meals": state.meals.filter((meal, index) => room.mealsMask[index]).map(meal => meal.id),
+							"meals": state.meals.filter((meal, index) => room.mealsMask[index]),
 							"services": [],
-							"status": "Created"
+							"status": "Created",
+							"payment": room.price
 						}
+					})
+					.map(accommodation => {
+						return Object.assign({}, accommodation, {
+							payment: calculateAccommodationPayment(accommodation, accommodation.meals, state.dateFrom, state.dateTo),
+							meals: accommodation.meals.map(meal => meal.id)
+						});
 					}),
 				"version": 0
 			};
+			
+			console.log(requestData);
 			Http.post(URL + 'reservations', requestData).then(res => {
 				return res.json().then(data => {
 					if(res.ok) {
@@ -143,6 +155,13 @@
 				});
 			});
 		});
+		function calculateAccommodationPayment(accommodation, meals, dateFrom, dateTo) {
+			const duration = Math.round((dateTo.getTime() - dateFrom.getTime()) / (1000*60*60*24));
+			const mealsPrice = meals.map(meal => meal.price).reduce(((prev, curr) => prev + curr), 0)
+			const costPerDay = accommodation.payment + mealsPrice;
+			const totalCost = costPerDay * duration;
+			return totalCost;
+		}
 		document.getElementById('dateFrom').valueAsDate = new Date();
 		document.getElementById('dateTo').valueAsDate = new Date(new Date().getTime() + 1000*60*60*24*7);
 		render();
