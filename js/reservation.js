@@ -92,11 +92,11 @@
 					</li>
 				</ul>
 				<div class="action">
-					${!enableAddRemove
-						? ''
-						: `<a href="">
+					${(enableAddRemove && (!isReserved || state.reservation.accommodations.length > 1))
+						? `<a href="">
 								${isReserved ? 'Usuń z rezerwacji' : 'Dodaj do rezerwacji'}
 							</a>`
+						: ''
 					}
 				</div>
 			`);
@@ -114,7 +114,7 @@
 					updateReservations();
 				});
 			});
-			if(enableAddRemove) {
+			if(enableAddRemove && (!isReserved || state.reservation.accommodations.length > 1)) {
 				item.querySelector('.action>a').addEventListener('click', (e) => {
 					e.preventDefault();
 					if(isReserved) {
@@ -219,6 +219,5 @@
 					window.location = "my-reservations.html";
 				});
 		});
-		render();
 	})();
 })();
