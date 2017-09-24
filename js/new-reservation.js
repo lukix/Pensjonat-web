@@ -7,6 +7,11 @@
 	};
 	function render() {
 		showRooms(state.rooms);
+
+		//Show price
+		let requestData = createRequestObject();
+		let totalPrice = requestData.accommodations.map(accommodation => accommodation.payment).reduce(((prev, curr) => prev+curr), 0);
+		document.querySelector('.your-reservation .additional-info').innerHTML = `Całkowity koszt pobytu: ${totalPrice}zł`;
 	}
 	function setState(obj) {
 		state = Object.assign({}, state, obj);
@@ -118,30 +123,7 @@
 			}
 		});
 		document.querySelector('#reserveBtn').addEventListener('click', function () {
-			let requestData = {
-				"startDate": formatDate(state.dateFrom) + 'T00:00:00',//"2017-08-27T19:34:32.156Z",
-				"endDate": formatDate(state.dateTo) + 'T00:00:00',
-				"guestId": localStorage.guestId,
-				"accommodations": state.rooms
-					.filter(room => room.selected)
-					.map(room => {
-						return {
-							"roomId": room.id,
-							"meals": state.meals.filter((meal, index) => room.mealsMask[index]),
-							"services": [],
-							"status": "Created",
-							"payment": room.price
-						}
-					})
-					.map(accommodation => {
-						return Object.assign({}, accommodation, {
-							payment: calculateAccommodationPayment(accommodation, accommodation.meals, state.dateFrom, state.dateTo),
-							meals: accommodation.meals.map(meal => meal.id)
-						});
-					}),
-				"version": 0
-			};
-			
+			let requestData = createRequestObject();
 			console.log(requestData);
 			Http.post(URL + 'reservations', requestData).then(res => {
 				return res.json().then(data => {
@@ -155,15 +137,40 @@
 				});
 			});
 		});
-		function calculateAccommodationPayment(accommodation, meals, dateFrom, dateTo) {
-			const duration = Math.round((dateTo.getTime() - dateFrom.getTime()) / (1000*60*60*24));
-			const mealsPrice = meals.map(meal => meal.price).reduce(((prev, curr) => prev + curr), 0)
-			const costPerDay = accommodation.payment + mealsPrice;
-			const totalCost = costPerDay * duration;
-			return totalCost;
-		}
 		document.getElementById('dateFrom').valueAsDate = new Date();
 		document.getElementById('dateTo').valueAsDate = new Date(new Date().getTime() + 1000*60*60*24*7);
 		render();
 	})();
+	function createRequestObject() {
+		return {
+			"startDate": formatDate(state.dateFrom) + 'T00:00:00',//"2017-08-27T19:34:32.156Z",
+			"endDate": formatDate(state.dateTo) + 'T00:00:00',
+			"guestId": localStorage.guestId,
+			"accommodations": state.rooms
+				.filter(room => room.selected)
+				.map(room => {
+					return {
+						"roomId": room.id,
+						"meals": state.meals.filter((meal, index) => room.mealsMask[index]),
+						"services": [],
+						"status": "Created",
+						"payment": room.price
+					}
+				})
+				.map(accommodation => {
+					return Object.assign({}, accommodation, {
+						payment: calculateAccommodationPayment(accommodation, accommodation.meals, state.dateFrom, state.dateTo),
+						meals: accommodation.meals.map(meal => meal.id)
+					});
+				}),
+			"version": 0
+		};
+	}
+	function calculateAccommodationPayment(accommodation, meals, dateFrom, dateTo) {
+		const duration = Math.round((dateTo.getTime() - dateFrom.getTime()) / (1000*60*60*24));
+		const mealsPrice = meals.map(meal => meal.price).reduce(((prev, curr) => prev + curr), 0)
+		const costPerDay = accommodation.payment + mealsPrice;
+		const totalCost = costPerDay * duration;
+		return totalCost;
+	}
 })();
