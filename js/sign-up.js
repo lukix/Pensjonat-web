@@ -68,6 +68,7 @@
 				password: mappedInputs.password.value,
 				pesel: mappedInputs.pesel.value,
 				birthday: getDateStringFromPESEL(mappedInputs.pesel.value),
+				idCard: mappedInputs.idcard.value,
 				address: [
 					mappedInputs.country.value,
 					mappedInputs.postalCode.value,

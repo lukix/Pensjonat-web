@@ -55,19 +55,21 @@
 	//Change user's data form
 	document.getElementById('editGuestDataForm').addEventListener('submit', (e) => {
 		e.preventDefault();
-		const [$firstName, $lastName, $email] = [
+		const [$firstName, $lastName, $email, $idCard] = [
 			document.querySelector('#editGuestDataForm input[name="name"]'),
 			document.querySelector('#editGuestDataForm input[name="surname"]'),
-			document.querySelector('#editGuestDataForm input[name="email"]')
+			document.querySelector('#editGuestDataForm input[name="email"]'),
+			document.querySelector('#editGuestDataForm input[name="idcard"]')
 		];
-		const [$firstNameMessageBox, $lastNameMessageBox, $emailMessageBox] =
-			[$firstName, $lastName, $email].map(item => findInputsMessageBox(item));
+		const [$firstNameMessageBox, $lastNameMessageBox, $emailMessageBox, $idCardMessageBox] =
+			[$firstName, $lastName, $email, $idCard].map(item => findInputsMessageBox(item));
 
 		let isValid = true;
 
 		$firstNameMessageBox.style.display = 'none';
 		$lastNameMessageBox.style.display = 'none';
 		$emailMessageBox.style.display = 'none';
+		$idCardMessageBox.style.display = 'none';
 
 		if($firstName.value.length === 0) {
 			$firstNameMessageBox.innerHTML = 'Imię nie może być puste';
@@ -84,12 +86,18 @@
 			$emailMessageBox.style.display = 'block';
 			isValid = false;
 		}
+		if($idCard.value.length === 0) {
+			$idCardMessageBox.innerHTML = 'Numer dowodu nie może być pusty';
+			$idCardMessageBox.style.display = 'block';
+			isValid = false;
+		}
 
 		if(isValid) {
 			const json = {
 				firstName: $firstName.value,
 				lastName: $lastName.value,
-				email: $email.value
+				email: $email.value,
+				idCard: $idCard.value
 			};
 			updateGuest(json, () => {
 				localStorage.setItem('guestFirstName', json.firstName);
@@ -168,6 +176,7 @@
 		document.querySelector('#editGuestDataForm input[name="name"]').value = guest.firstName;
 		document.querySelector('#editGuestDataForm input[name="surname"]').value = guest.lastName;
 		document.querySelector('#editGuestDataForm input[name="email"]').value = guest.email;
+		document.querySelector('#editGuestDataForm input[name="idcard"]').value = guest.idCard;
 	
 		const [country, postalCode, city, street, houseNumber] = guest.address.split(', ');
 		document.querySelector('#editGuestAddressForm select[name="country"]').value = country;
